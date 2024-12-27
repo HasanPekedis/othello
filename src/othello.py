@@ -1,3 +1,4 @@
+import ai_player as ai_player
 class Othello:
     def __init__(self):
         self.board_size = 8
@@ -45,6 +46,19 @@ class Othello:
                 c += dc
 
         return False
+
+    def get_valid_moves(self, player):
+        valid_moves = []
+
+        for row in range(self.board_size):
+            for col in range(self.board_size):
+                if self.is_valid_move(row, col, player):
+                    valid_moves.append((row, col))
+        
+        # Convert valid moves to the desired format
+        formatted_moves = [f"{row + 1}{chr(col + ord('a'))}" for row, col in valid_moves]
+        print(formatted_moves)
+        return formatted_moves
 
     def apply_move(self, row, col, player):
         opponent = 'X' if player == 'O' else 'O'
@@ -108,6 +122,50 @@ class Othello:
             print(f"{current_player}'s turn.")
             try:
                 move = input("Enter move (e.g., 3d): ").strip()
+                if len(move) == 2 and move[0].isdigit() and move[1].isalpha():
+                    row = int(move[0]) - 1
+                    col = ord(move[1].lower()) - ord('a')
+                    if 0 <= row < self.board_size and 0 <= col < self.board_size and self.is_valid_move(row, col, current_player):
+                        self.apply_move(row, col, current_player)
+                        current_player = 'X' if current_player == 'O' else 'O'
+                    else:
+                        print("Invalid move. Try again.")
+                else:
+                    print("Invalid input. Please enter row and column in the format (e.g., 3d).")
+            except ValueError:
+                print("Invalid input. Please enter row and column in the format (e.g., 3d).")
+
+        self.print_game_result()
+
+
+    def play_human_vs_ai(self):
+        current_player = 'X'
+        ai_player_digit = 'O'
+
+        ai = ai_player.AI_player(ai_player_digit, 0)
+
+        while True:
+            print(30 * "=")
+            self.print_board()
+            if not self.has_valid_moves(current_player):
+                print(f"{current_player} has no valid moves. Skipping turn.")
+                current_player = 'X' if current_player == 'O' else 'O'
+                if not self.has_valid_moves(current_player):
+                    print("No players have valid moves. Game over.")
+                    break
+                continue
+
+            print(f"{current_player}'s turn.")
+            try:
+                if current_player == ai_player_digit:
+                    print("AI can play: ")
+                    move = ai.decide_move(self)
+                    print(f"AI player moves to " + move)
+                else:
+                    print("You can play: ")
+                    self.get_valid_moves(current_player)
+                    move = input("Enter move (e.g., 3d): ").strip()
+
                 if len(move) == 2 and move[0].isdigit() and move[1].isalpha():
                     row = int(move[0]) - 1
                     col = ord(move[1].lower()) - ord('a')
