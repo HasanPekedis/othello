@@ -79,10 +79,23 @@ class Othello:
                     return True
         return False
 
-    def play(self):
+    def print_game_result(self):
+        self.print_board()
+        x_count = sum(row.count('X') for row in self.board)
+        o_count = sum(row.count('O') for row in self.board)
+        print(f"Game over. X: {x_count}, O: {o_count}")
+        if x_count > o_count:
+            print("X wins!")
+        elif o_count > x_count:
+            print("O wins!")
+        else:
+            print("It's a tie!")
+    
+    def play_human_vs_human(self):
         current_player = 'X'
 
         while True:
+            print(30 * "=")
             self.print_board()
             if not self.has_valid_moves(current_player):
                 print(f"{current_player} has no valid moves. Skipping turn.")
@@ -108,18 +121,5 @@ class Othello:
             except ValueError:
                 print("Invalid input. Please enter row and column in the format (e.g., 3d).")
 
-        self.print_board()
-        x_count = sum(row.count('X') for row in self.board)
-        o_count = sum(row.count('O') for row in self.board)
-        print(f"Game over. X: {x_count}, O: {o_count}")
-        if x_count > o_count:
-            print("X wins!")
-        elif o_count > x_count:
-            print("O wins!")
-        else:
-            print("It's a tie!")
+        self.print_game_result()
 
-
-if __name__ == "__main__":
-    game = Othello()
-    game.play()
