@@ -6,9 +6,10 @@ class AIplayer:
         self.opponent = 'X' if player == 'O' else 'O'
 
 
-    def decide_move(self, game, depth):
+    def decide_move(self, game, depth, heuristic):
+        
+        _, best_move = self.minimax(game, depth, True, heuristic)
 
-        _, best_move = self.minimax(game, depth, True)
         if best_move:
             row, col = best_move
             return f"{row + 1}{chr(col + ord('a'))}"
@@ -27,10 +28,17 @@ class AIplayer:
 
         return player_count - opponent_count
 
-    def minimax(self, game, depth, maximizing_player):
+
+    def minimax(self, game, depth, maximizing_player, heuristic):
 
         if depth == 0 or not game.has_valid_moves(self.player):
-            score = self.heuristic_h1(game)
+            if heuristic == 'h1':
+                score = self.heuristic_h1(game)
+            elif heuristic == 'h2':
+                score = self.heuristic_h2(game)
+            elif heuristic == 'h3':
+                score = self.heuristic_h3(game)
+
             return score, None
 
         best_move = None
@@ -45,8 +53,7 @@ class AIplayer:
                         game.apply_move(row, col, self.player)
 
                         # Recursive call
-                        eval_score, _ = self.minimax(game, depth - 1, False)
-                        print(eval_score)
+                        eval_score, _ = self.minimax(game, depth - 1, False, heuristic)
 
                         # Undo the move
                         game.board = temp_board
@@ -67,8 +74,7 @@ class AIplayer:
                         game.apply_move(row, col, self.opponent)
 
                         # Recursive call
-                        eval_score, _ = self.minimax(game, depth - 1, True)
-                        print(eval_score)
+                        eval_score, _ = self.minimax(game, depth - 1, True, heuristic)
                         # Undo the move
                         game.board = temp_board
 
@@ -77,6 +83,40 @@ class AIplayer:
                             best_move = (row, col)
 
             return min_eval, best_move
-        
+
+    def heuristic_h2(self, game):
+
+        weight_matrix = [
+            [100, 25, 10, 5, 5, 10, 25, 100],
+            [25, 25, 2, 2, 2, 2, 25, 25],
+            [10, 2, 5, 1, 1, 5, 2, 10],
+            [5, 2, 1, 2, 2, 1, 2, 5],
+            [5, 2, 1, 2, 2, 1, 2, 5],
+            [10, 2, 5, 1, 1, 5, 2, 10],
+            [25, 25, 2, 2, 2, 2, 25, 25],
+            [100, 25, 10, 5, 5, 10, 25, 100],
+        ]
+
+        heuristic_value = 0
+
+        # Calculate heuristic based on the weight matrix
+        for row in range(len(game.board)):
+            for col in range(len(game.board[row])):
+                if game.board[row][col] == self.player:
+                    heuristic_value += weight_matrix[row][col]
+                elif game.board[row][col] == self.opponent:
+                    heuristic_value -= weight_matrix[row][col]
+
+        return heuristic_value
+    
+    def heuristic_h3(self, game):
+    
+        ai_valid_moves = len(game.get_valid_moves(self.player))
+        opponent_valid_moves = len(game.get_valid_moves(self.opponent))
+
+        # Calculate heuristic value
+        heuristic_value = ai_valid_moves - opponent_valid_moves
+        return heuristic_value
+    
     
 

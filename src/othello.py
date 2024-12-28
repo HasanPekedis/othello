@@ -57,7 +57,6 @@ class Othello:
         
         # Convert valid moves to the desired format
         formatted_moves = [f"{row + 1}{chr(col + ord('a'))}" for row, col in valid_moves]
-        print(formatted_moves)
         return formatted_moves
 
     def apply_move(self, row, col, player):
