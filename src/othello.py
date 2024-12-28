@@ -142,7 +142,7 @@ class Othello:
         current_player = 'X'
         ai_player_digit = 'O'
 
-        ai = ai_player.AI_player(ai_player_digit, 0)
+        ai = ai_player.AIplayer(ai_player_digit, 0)
 
         while True:
             print(30 * "=")
