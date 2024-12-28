@@ -229,3 +229,63 @@ class Othello:
                 print("Invalid input. Please enter row and column in the format (e.g., 3d).")
 
         self.print_game_result()
+
+
+    def play_ai_vs_random(self, ai_player, random_player):
+        
+        current_player = ai_player
+        opponent = random_player
+        
+        while True:
+            print(30 * "=")
+            self.print_board()
+
+            if not self.has_valid_moves(current_player):
+                print(f"{current_player} has no valid moves. Skipping turn.")
+                current_player = 'X' if current_player == 'O' else 'O'
+                if not self.has_valid_moves(current_player):
+                    print("No players have valid moves. Game over.")
+                    break
+                continue
+
+            print(f"{current_player}'s turn.")
+            try:
+                if current_player == ai_player.player:
+                    print("AI Player is deciding a move...")
+                    move = ai_player.decide_move(self)
+                    print(f"AI Player moves to {move}")
+                else:
+                    print("Random Player is deciding a move...")
+                    move = random_player.decide_move(self)
+                    print(f"Random Player moves to {move}")
+
+                if len(move) == 2 and move[0].isdigit() and move[1].isalpha():
+                    row = int(move[0]) - 1
+                    col = ord(move[1].lower()) - ord('a')
+                    if 0 <= row < self.board_size and 0 <= col < self.board_size and self.is_valid_move(row, col, current_player):
+                        self.apply_move(row, col, current_player)
+                        current_player = 'X' if current_player == 'O' else 'O'
+                    else:
+                        print("Invalid move. Try again.")
+                else:
+                    print("Invalid input. Please enter row and column in the format (e.g., 3d).")
+            except ValueError:
+                print("Invalid input. Please enter row and column in the format (e.g., 3d).")
+
+
+        # Print final board state
+        self.print_board()
+
+        # Calculate the winner
+        x_count = sum(row.count('X') for row in self.board)
+        o_count = sum(row.count('O') for row in self.board)
+
+        if x_count > o_count:
+            winner = 'X'
+        elif o_count > x_count:
+            winner = 'O'
+        else:
+            winner = None
+
+        print(f"Game Over! X: {x_count}, O: {o_count}. Winner: {winner if winner else 'Draw'}")
+        return winner
