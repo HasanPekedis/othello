@@ -71,9 +71,13 @@ class Benchmark:
 
     def display_results(self, results):
         print("\nBenchmark Results:")
+        previous_heuristic = None
         for result in results:
+            if result['heuristic'] != previous_heuristic:
+                print(80 * '=')
+                previous_heuristic = result['heuristic']
             print(f"Heuristic: {result['heuristic']}, Depth: {result['depth']}, AI Wins: {result['ai_wins']}, Random Wins: {result['random_wins']}, Draws: {result['draws']}, Avg Time: {result['avg_time']:.2f} seconds, Accuracy: {result['accuracy']:.2f}%")
 
 if __name__ == "__main__":
-    benchmark = Benchmark(num_games=5)  # Adjust the number of games as needed
+    benchmark = Benchmark(num_games=100)  # Adjust the number of games as needed
     benchmark.run_benchmark()

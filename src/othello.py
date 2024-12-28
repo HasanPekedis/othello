@@ -232,14 +232,15 @@ class Othello:
 
 
     def play_ai_vs_random(self, ai_player, random_player):
-        
-        current_player = ai_player
-        opponent = random_player
-        
+        current_player = 'X'  # AI starts as 'X'
+        ai_digit = 'X'
+        random_digit = 'O'
+
         while True:
             print(30 * "=")
             self.print_board()
 
+            # Check if the current player has valid moves
             if not self.has_valid_moves(current_player):
                 print(f"{current_player} has no valid moves. Skipping turn.")
                 current_player = 'X' if current_player == 'O' else 'O'
@@ -250,15 +251,18 @@ class Othello:
 
             print(f"{current_player}'s turn.")
             try:
-                if current_player == ai_player.player:
+                if current_player == ai_digit:
                     print("AI Player is deciding a move...")
                     move = ai_player.decide_move(self)
                     print(f"AI Player moves to {move}")
-                else:
+                elif current_player == random_digit:
                     print("Random Player is deciding a move...")
                     move = random_player.decide_move(self)
                     print(f"Random Player moves to {move}")
+                else:
+                    print("Unexpected player detected.")
 
+                # Validate and apply the move
                 if len(move) == 2 and move[0].isdigit() and move[1].isalpha():
                     row = int(move[0]) - 1
                     col = ord(move[1].lower()) - ord('a')
@@ -266,12 +270,11 @@ class Othello:
                         self.apply_move(row, col, current_player)
                         current_player = 'X' if current_player == 'O' else 'O'
                     else:
-                        print("Invalid move. Try again.")
+                        print("Invalid move. Skipping turn.")
                 else:
-                    print("Invalid input. Please enter row and column in the format (e.g., 3d).")
+                    print("Invalid move format. Skipping turn.")
             except ValueError:
-                print("Invalid input. Please enter row and column in the format (e.g., 3d).")
-
+                print("Error in move decision. Skipping turn.")
 
         # Print final board state
         self.print_board()
