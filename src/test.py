@@ -3,6 +3,9 @@ import ai_player as ai_player
 
 othello = othello.Othello()
 
-ai_player = ai_player.AIplayer('O')
+ai_player = ai_player.AIplayer('X')
+ai_player.depth = 3
+ai_player.heuristic = 'h1'
 
-print(ai_player.decide_move(othello, 3, 'h2')) 
+
+print(othello.has_valid_moves('O')) # Expected output: True

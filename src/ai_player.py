@@ -2,13 +2,15 @@ import random
 
 class AIplayer:
     def __init__(self, player):
+        self.depth = 0
+        self.heuristic = "h1"
         self.player = player
         self.opponent = 'X' if player == 'O' else 'O'
 
 
-    def decide_move(self, game, depth, heuristic):
+    def decide_move(self, game):
         
-        _, best_move = self.minimax(game, depth, True, heuristic)
+        _, best_move = self.minimax(game, self.depth, True, self.heuristic)
 
         if best_move:
             row, col = best_move

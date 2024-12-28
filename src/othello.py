@@ -137,12 +137,11 @@ class Othello:
         self.print_game_result()
 
 
-    def play_human_vs_ai(self):
+    def play_human_vs_ai(self, ai_player):
         current_player = 'X'
         ai_player_digit = 'O'
 
-        ai = ai_player.AIplayer(ai_player_digit, 0)
-
+        ai = ai_player
         while True:
             print(30 * "=")
             self.print_board()
@@ -180,3 +179,53 @@ class Othello:
 
         self.print_game_result()
 
+
+
+    def play_ai_vs_ai(self, ai_player_1, ai_player_2):
+        current_player = 'X'
+        ai_1_digit = 'X'
+        ai_2_digit = 'O'
+
+        ai1 = ai_player_1
+        ai2 = ai_player_2
+
+        while True:
+            print(30 * "=")
+            self.print_board()
+            if not self.has_valid_moves(current_player):
+                print(f"{current_player} has no valid moves. Skipping turn.")
+                current_player = 'X' if current_player == 'O' else 'O'
+                if not self.has_valid_moves(current_player):
+                    print("No players have valid moves. Game over.")
+                    break
+                continue
+
+            print(f"{current_player}'s turn.")
+            try:
+                if current_player == ai_1_digit:
+                    print("AI 1 can play: ")
+                    move = ai1.decide_move(self)
+                    print(f"AI 1 moves to " + move)
+                elif current_player == ai_2_digit:
+                    print("AI 2 can play: ")
+                    move = ai2.decide_move(self)
+                    print(f"AI 2 moves to " + move)
+                else:
+                    print("You can play: ")
+                    self.get_valid_moves(current_player)
+                    move = input("Enter move (e.g., 3d): ").strip()
+
+                if len(move) == 2 and move[0].isdigit() and move[1].isalpha():
+                    row = int(move[0]) - 1
+                    col = ord(move[1].lower()) - ord('a')
+                    if 0 <= row < self.board_size and 0 <= col < self.board_size and self.is_valid_move(row, col, current_player):
+                        self.apply_move(row, col, current_player)
+                        current_player = 'X' if current_player == 'O' else 'O'
+                    else:
+                        print("Invalid move. Try again.")
+                else:
+                    print("Invalid input. Please enter row and column in the format (e.g., 3d).")
+            except ValueError:
+                print("Invalid input. Please enter row and column in the format (e.g., 3d).")
+
+        self.print_game_result()
