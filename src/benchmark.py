@@ -18,7 +18,7 @@ class Benchmark:
     def run_benchmark(self):
         results = []
         heuristics = ['h1', 'h2', 'h3']
-        depths = [1, 2, 3]
+        depths = [1, 2, 3, 4, 5]
 
         for heuristic in heuristics:
             for depth in depths:
